@@ -26,7 +26,7 @@ func J() {
 		Int("int4", 4).
 		Ints("ints0", 0, 1, 2, 3, 4)
 
-	formatter.Bytes()
+	formatter.Flush()
 	formatter.Release()
 
 	// fmt.Println(formatter.OutputString())

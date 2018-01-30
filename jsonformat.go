@@ -30,7 +30,10 @@ func (formatter *JSONFormatter) Bool(key string, value bool) Formatter {
 func (formatter *JSONFormatter) Bools(key string, values ...bool) Formatter {
 	return formatter.appendkey(key).appendbools(values...)
 }
-func (formatter *JSONFormatter) Bytes() []byte {
+func (formatter *JSONFormatter) Bytes(key string, value []byte) Formatter {
+	return formatter.appendkey(key).appendbytes(value)
+}
+func (formatter *JSONFormatter) Flush() []byte {
 	length := len(formatter.buffer)
 	if length == 0 {
 		return nil
@@ -40,6 +43,7 @@ func (formatter *JSONFormatter) Bytes() []byte {
 	}
 	return formatter.buffer
 }
+
 func (formatter *JSONFormatter) Release() {
 	defaultJSONFormatterPool.Release(formatter)
 }
@@ -125,6 +129,17 @@ func (formatter *JSONFormatter) appendbools(values ...bool) *JSONFormatter {
 		formatter.buffer = strconv.AppendBool(append(formatter.buffer, ','), values[i])
 	}
 	formatter.buffer = append(formatter.buffer, ']')
+	return formatter
+}
+
+func (formatter *JSONFormatter) appendbytes(value []byte) *JSONFormatter {
+	if len(value) == 0 {
+		formatter.buffer = append(formatter.buffer, `"nil"`...)
+		return formatter
+	}
+	formatter.buffer = append(formatter.buffer, '"')
+	formatter.buffer = append(formatter.buffer, value...)
+	formatter.buffer = append(formatter.buffer, '"')
 	return formatter
 }
 

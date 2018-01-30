@@ -9,7 +9,9 @@ type Formatter interface {
 	Bool(key string, value bool) Formatter
 	Bools(key string, values ...bool) Formatter
 
-	Bytes() []byte
+	Bytes(key string, value []byte) Formatter
+
+	Flush() []byte
 
 	Release()
 }
